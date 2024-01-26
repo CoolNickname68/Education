@@ -10,15 +10,31 @@ public class homework {
         }
 
         // Задача 2
-        int clientDeviceYear = 2015;
 
-        if (clientDeviceYear < 2015) {
-            System.out.println("Установите облегченную версию приложения для iOS по ссылке");
-            System.out.println("Установите облегченную версию приложения для Android по ссылке");
-        } else {
-            System.out.println("Установите версию приложения для iOS по ссылке");
-            System.out.println("Установите версию приложения для Android по ссылке");
-        }
+
+ 
+            clientOS = 1; // 0 — iOS, 1 — Android
+            int clientDeviceYear = 2015;
+    
+            String message;
+    
+            if (clientOS == 0) {
+                if (clientDeviceYear < 2015) {
+                    message = "Установите облегченную версию приложения для iOS по ссылке";
+                } else {
+                    message = "Установите версию приложения для iOS по ссылке";
+                }
+            } else if (clientOS == 1) {
+                if (clientDeviceYear < 2015) {
+                    message = "Установите облегченную версию приложения для Android по ссылке";
+                } else {
+                    message = "Установите версию приложения для Android по ссылке";
+                }
+            } else {
+                message = "Некорректная операционная система";
+            }
+    
+            System.out.println(message);
 
         // Задача 3
         int year = 2021;
@@ -43,6 +59,46 @@ public class homework {
         } else {
             deliveryDays = 0; // Свыше 100 км доставки нет
         }
+
+        // задача 5
+            int monthNumber = 12;
+    
+            // Проверка условия, при котором программа не будет выполняться
+            if (monthNumber < 1 || monthNumber > 12) {
+                System.out.println("Некорректный номер месяца. Программа завершена.");
+            } else {
+                // Определение сезона с использованием оператора switch
+                String season;
+                switch (monthNumber) {
+                    case 1:
+                    case 2:
+                    case 12:
+                        season = "зима";
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                        season = "весна";
+                        break;
+                    case 6:
+                    case 7:
+                    case 8:
+                        season = "лето";
+                        break;
+                    case 9:
+                    case 10:
+                    case 11:
+                        season = "осень";
+                        break;
+                    default:
+                        season = "невозможно определить";
+                }
+    
+                // Вывод результата
+                System.out.println("Месяц номер " + monthNumber + " принадлежит к сезону " + season + ".");
+            }
+
+
 
         System.out.println("Потребуется дней: " + deliveryDays);
     }
