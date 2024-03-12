@@ -1,93 +1,162 @@
-class Main {
-    public static void main(String[] args) {
-        // Создание объектов авторов
-        Author author1 = new Author("Иван", "Иванов");
-        Author author2 = new Author("Петр", "Петров");
-
-        // Создание объектов книг
-        Book book1 = new Book("Название книги 1", author1, 2000);
-        Book book2 = new Book("Название книги 2", author2, 2010);
-
-        // Вывод информации о книгах до изменения года публикации
-        System.out.println("Информация о книгах до изменения года публикации:");
-        System.out.println(book1);
-        System.out.println(book2);
-
-        // Изменение года публикации одной из книг
-        book1.setPublicationYear(2005);
-
-        // Вывод информации о книгах после изменения года публикации
-        System.out.println("\nИнформация о книгах после изменения года публикации:");
-        System.out.println(book1);
-        System.out.println(book2);
-    }
+// Интерфейс для всех типов транспортных средств
+interface Vehicle {
+    String getModelName();
+    void setModelName(String modelName);
+    int getWheelsCount();
+    void setWheelsCount(int wheelsCount);
+    void updateTyre();
+    void checkEngine();
 }
 
-class Book {
-    private String title;
-    private Author author;
-    private int publicationYear;
+// Реализация интерфейса для автомобиля
+class Car implements Vehicle {
 
-    // Конструктор
-    public Book(String title, Author author, int publicationYear) {
-        this.title = title;
-        this.author = author;
-        this.publicationYear = publicationYear;
-    }
-
-    // Геттеры
-    public String getTitle() {
-        return title;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    // Сеттер для поля "Год публикации"
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
+    private String modelName;
+    private int wheelsCount;
 
     @Override
-    public String toString() {
-        return "Книга: " + title + ", Автор: " + author.getFullName() + ", Год публикации: " + publicationYear;
+    public String getModelName() {
+        return modelName;
+    }
+
+    @Override
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    @Override
+    public int getWheelsCount() {
+        return wheelsCount;
+    }
+
+    @Override
+    public void setWheelsCount(int wheelsCount) {
+        this.wheelsCount = wheelsCount;
+    }
+
+    @Override
+    public void updateTyre() {
+        System.out.println("Меняем покрышку");
+    }
+
+    @Override
+    public void checkEngine() {
+        System.out.println("Проверяем двигатель");
     }
 }
 
-class Author {
-    private String firstName;
-    private String lastName;
+// Реализация интерфейса для грузовика
+class Truck implements Vehicle {
 
-    // Конструктор
-    public Author(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    private String modelName;
+    private int wheelsCount;
+
+    @Override
+    public String getModelName() {
+        return modelName;
     }
 
-    // Геттеры
-    public String getFirstName() {
-        return firstName;
+    @Override
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
-    public String getLastName() {
-        return lastName;
+    @Override
+    public int getWheelsCount() {
+        return wheelsCount;
     }
 
-    // Метод для получения полного имени автора
-    public String getFullName() {
-        return firstName + " " + lastName;
+    @Override
+    public void setWheelsCount(int wheelsCount) {
+        this.wheelsCount = wheelsCount;
+    }
+
+    @Override
+    public void updateTyre() {
+        System.out.println("Меняем покрышку");
+    }
+
+    @Override
+    public void checkEngine() {
+        System.out.println("Проверяем двигатель");
+    }
+
+    public void checkTrailer() {
+        System.out.println("Проверяем прицеп");
     }
 }
 
+// Реализация интерфейса для велосипеда
+class Bicycle implements Vehicle {
 
+    private String modelName;
+    private int wheelsCount;
 
+    @Override
+    public String getModelName() {
+        return modelName;
+    }
 
+    @Override
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
 
+    @Override
+    public int getWheelsCount() {
+        return wheelsCount;
+    }
 
+    @Override
+    public void setWheelsCount(int wheelsCount) {
+        this.wheelsCount = wheelsCount;
+    }
+
+    @Override
+    public void updateTyre() {
+        System.out.println("Меняем покрышку");
+    }
+
+    @Override
+    public void checkEngine() {
+        // Велосипеду не требуется проверка двигателя
+    }
+}
+
+// Сервисная станция работает с транспортными средствами через общий интерфейс
+class ServiceStation {
+    public void check(Vehicle vehicle) {
+        System.out.println("Обслуживаем " + vehicle.getModelName());
+        for (int i = 0; i < vehicle.getWheelsCount(); i++) {
+            vehicle.updateTyre();
+        }
+        vehicle.checkEngine();
+        if (vehicle instanceof Truck) {
+            ((Truck) vehicle).checkTrailer();
+        }
+    }
+}
+
+// Основной класс с методом main
+public class Main {
+    public static void main(String[] args) {
+        // Пример использования
+        Car car = new Car();
+        car.setModelName("car1");
+        car.setWheelsCount(4);
+
+        Truck truck = new Truck();
+        truck.setModelName("truck1");
+        truck.setWheelsCount(6);
+
+        Bicycle bicycle = new Bicycle();
+        bicycle.setModelName("bicycle1");
+        bicycle.setWheelsCount(2);
+
+        ServiceStation station = new ServiceStation();
+        station.check(car);
+        station.check(truck);
+        station.check(bicycle);
+    }
+}
 
