@@ -1,5 +1,3 @@
-
-// Основной класс с методом main
 public class Main {
     public static void main(String[] args) {
         // Пример использования
@@ -21,4 +19,5 @@ public class Main {
         station.check(bicycle);
     }
 }
+
 
