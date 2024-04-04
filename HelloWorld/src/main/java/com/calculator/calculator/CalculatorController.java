@@ -22,18 +22,18 @@ public class CalculatorController {
     }
 
     @GetMapping("/plus")
-    public int plus(@RequestParam int num1, @RequestParam int num2) {
-        return calculatorService.plus(num1, num2);
+    public String plus(@RequestParam int num1, @RequestParam int num2) {
+        return num1 + " + " + num2 + " = " + calculatorService.plus(num1, num2);
     }
 
     @GetMapping("/minus")
-    public int minus(@RequestParam int num1, @RequestParam int num2) {
-        return calculatorService.minus(num1, num2);
+    public String minus(@RequestParam int num1, @RequestParam int num2) {
+        return num1 + " - " + num2 + " = " + calculatorService.minus(num1, num2);
     }
 
     @GetMapping("/multiply")
-    public int multiply(@RequestParam int num1, @RequestParam int num2) {
-        return calculatorService.multiply(num1, num2);
+    public String multiply(@RequestParam int num1, @RequestParam int num2) {
+        return num1 + " * " + num2 + " = " + calculatorService.multiply(num1, num2);
     }
 
     @GetMapping("/divide")
@@ -41,8 +41,7 @@ public class CalculatorController {
         if (num2 == 0) {
             return "Деление на 0 недопустимо";
         } else {
-            return String.valueOf(calculatorService.divide(num1, num2));
+            return num1 + " / " + num2 + " = " + calculatorService.divide(num1, num2);
         }
     }
 }
-
