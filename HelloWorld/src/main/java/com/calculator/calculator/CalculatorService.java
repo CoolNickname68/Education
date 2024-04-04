@@ -18,6 +18,10 @@ public class CalculatorService {
     }
 
     public int divide(int num1, int num2) {
-        return num1 / num2;
+        if (num2 == 0) {
+            throw new IllegalArgumentException("Деление на 0 недопустимо");
+        } else {
+            return num1 / num2;
+        }
     }
 }
