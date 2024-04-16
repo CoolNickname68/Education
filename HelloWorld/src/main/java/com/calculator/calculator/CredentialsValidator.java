@@ -2,7 +2,7 @@ package com.calculator.calculator;
 
 public class CredentialsValidator {
     
-    public static void validateCredentials(String login, String password, String confirmPassword) {
+    public static void validateCredentials(String login, String password, String confirmPassword) throws WrongLoginException, WrongPasswordException {
         try {
             // Проверка логина
             if (!login.matches("[a-zA-Z0-9_]+") || login.length() > 20) {
@@ -20,6 +20,7 @@ public class CredentialsValidator {
             }
         } catch (WrongLoginException | WrongPasswordException e) {
             System.out.println("Ошибка: " + e.getMessage());
+            throw e; // Перевыбрасываем исключение для обработки во внешнем коде
         }
     }
 
@@ -29,7 +30,12 @@ public class CredentialsValidator {
         String password = "D_1hWiKjjP_9";
         String confirmPassword = "D_1hWiKjjP_9";
 
-        validateCredentials(login, password, confirmPassword);
+        try {
+            validateCredentials(login, password, confirmPassword);
+        } catch (WrongLoginException | WrongPasswordException e) {
+            // Обработка исключений
+            System.out.println("Ошибка: " + e.getMessage());
+        }
     }
 }
 
