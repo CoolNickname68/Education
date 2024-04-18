@@ -1,6 +1,7 @@
 package com.employee.employee;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import com.employee.employee.exception.EmployeeNotFoundException;
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
+    
     private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
@@ -22,15 +24,18 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public ResponseEntity<?> addEmployee(@RequestParam String firstName, @RequestParam String lastName) {
+    public ResponseEntity<?> addEmployee(@RequestParam String firstName, @RequestParam String lastName,
+                                         @RequestParam double salary, @RequestParam String department) {
         try {
-            Employee employee = new Employee(firstName, lastName);
-            employeeService.addEmployee(employee);
-            return ResponseEntity.ok(employee);
+            employeeService.addEmployee(firstName, lastName, salary, department);
+            return ResponseEntity.ok("Employee added successfully");
         } catch (EmployeeAlreadyAddedException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
     }
+    
+
+
     
     @GetMapping("/remove")
     public ResponseEntity<?> removeEmployee(@RequestParam String firstName, @RequestParam String lastName) {
@@ -53,9 +58,14 @@ public class EmployeeController {
         }
     }
     @GetMapping("/all")
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }    
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
+    } 
+    @GetMapping("/all-grouped")
+    public Map<String, List<Employee>> getAllEmployeesGroupedByDepartment() {
+        return employeeService.getAllEmployeesGroupedByDepartment();
+    }
     
 }
 

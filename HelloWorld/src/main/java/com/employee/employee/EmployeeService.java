@@ -1,8 +1,11 @@
-// EmployeeService.java
 package com.employee.employee;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,11 @@ import com.employee.employee.exception.EmployeeStorageIsFullException;
 @Service
 public class EmployeeService {
     private final List<Employee> employeeList = new ArrayList<>();
+    private final Map<String, Integer> departmentIdMap = new HashMap<>();
     private static final int MAX_EMPLOYEES = 100; // Пример значения
 
-    public void addEmployee(Employee employee) {
+    public Employee addEmployee(String firstName, String lastName, double salary, String department) {
+        Employee employee = new Employee(firstName, lastName, salary, department);
         if (employeeList.contains(employee)) {
             throw new EmployeeAlreadyAddedException("Employee already exists.");
         }
@@ -23,7 +28,17 @@ public class EmployeeService {
         if (employeeList.size() >= MAX_EMPLOYEES) {
             throw new EmployeeStorageIsFullException("Employee storage is full.");
         }
+    
+        int departmentId = getOrCreateDepartmentId(department);
+        employee.setDepartmentId(departmentId);
         employeeList.add(employee);
+        
+        return employee; // Возвращает добавленного сотрудника
+    }
+    
+
+    private int getOrCreateDepartmentId(String department) {
+        return departmentIdMap.computeIfAbsent(department, key -> departmentIdMap.size());
     }
 
     public Employee removeEmployee(String firstName, String lastName) {
@@ -36,15 +51,38 @@ public class EmployeeService {
     }
 
     public Employee findEmployee(String firstName, String lastName) {
-        for (Employee employee : employeeList) {
-            if (employee.getFirstName().equals(firstName) && employee.getLastName().equals(lastName)) {
-                return employee;
-            }
-        }
-        throw new EmployeeNotFoundException("Employee not found.");
+        return employeeList.stream()
+                .filter(employee -> employee.getFirstName().equals(firstName) && employee.getLastName().equals(lastName))
+                .findFirst()
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found."));
     }
 
     public List<Employee> getAllEmployees() {
         return employeeList;
+    }
+
+    public Employee getEmployeeWithMaxSalaryByDepartment(int departmentId) {
+        return employeeList.stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .max(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("No employees found for department: " + departmentId));
+    }
+
+    public Employee getEmployeeWithMinSalaryByDepartment(int departmentId) {
+        return employeeList.stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .min(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("No employees found for department: " + departmentId));
+    }
+
+    public List<Employee> getAllEmployeesByDepartment(int departmentId) {
+        return employeeList.stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, List<Employee>> getAllEmployeesGroupedByDepartment() {
+        return employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
     }
 }
