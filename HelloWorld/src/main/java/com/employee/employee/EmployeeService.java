@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.employee.employee.exception.EmployeeAlreadyAddedException;
 import com.employee.employee.exception.EmployeeNotFoundException;
@@ -21,6 +24,12 @@ public class EmployeeService {
 
     public Employee addEmployee(String firstName, String lastName, double salary, String department) {
         Employee employee = new Employee(firstName, lastName, salary, department);
+
+        // Проверка наличия цифр в firstName или lastName
+        if (containsDigit(firstName) || containsDigit(lastName)) {
+            throw new IllegalArgumentException();
+        }
+
         if (employeeList.contains(employee)) {
             throw new EmployeeAlreadyAddedException("Employee already exists.");
         }
@@ -28,12 +37,22 @@ public class EmployeeService {
         if (employeeList.size() >= MAX_EMPLOYEES) {
             throw new EmployeeStorageIsFullException("Employee storage is full.");
         }
-    
+
         int departmentId = getOrCreateDepartmentId(department);
         employee.setDepartmentId(departmentId);
         employeeList.add(employee);
-        
+
         return employee; // Возвращает добавленного сотрудника
+    }
+
+    // Обработчик исключения для IllegalArgumentException
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    
+    private boolean containsDigit(String s) {
+        return s != null && s.matches(".*\\d.*");
     }
     
 
